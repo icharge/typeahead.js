@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Test Typeahead</title>
+	<link rel="stylesheet" href="examples.css">
+	<script src="jquery.min.js"></script>
+	<script src="typeahead.bundle.js"></script>
+	
+</head>
+<body>
+	<div id="remote">
+		<label for="teacher">อาจารย์ : </label><br>
+		<input id="teacher" name="teacher" class="typeahead" type="text" placeholder="กรุณากรอกชื่อ">
+	</div>
+	<br>
+	<div id="name"></div>
+
+	<script>
+		$(function() {
+			var teacherDB = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				//prefetch: 'data.json',
+				remote: 'q.php?q=%QUERY'
+			});
+			 
+			teacherDB.initialize();
+			 
+			$('#remote .typeahead').typeahead(null, {
+				name: 'teacher',
+				displayKey: 'value',
+				source: teacherDB.ttAdapter()
+			});
+
+			$('#teacher').on('typeahead:selected', function(e) {
+				var args;//, type, text;
+				args = [].slice.call(arguments, 1);
+				args = args[0];
+				//type = e.type;
+				//text = window.JSON ? JSON.stringify(args) : '';
+
+				$('#name').text(args['tid'] + ' ' + args['value']);
+			});
+		});
+	</script>
+</body>
+</html>
